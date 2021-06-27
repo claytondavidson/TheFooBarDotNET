@@ -1,0 +1,33 @@
+@page "/posts"
+@attribute [Authorize]
+
+@using Domain
+@using Application
+
+@inject IPostData _db
+
+<h3>Posts</h3>
+
+@if (_posts is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @foreach (var post in _posts)
+    {
+        <div>
+            <p>@post.Title</p>
+        </div>
+    }
+}
+
+
+@code {
+    private List<Post> _posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _posts = await _db.GetPosts();
+    }
+}
