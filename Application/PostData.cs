@@ -14,12 +14,11 @@ namespace Application
             _db = db;
         }
 
-        public Task<List<Post>> GetPosts()
+        public async Task<List<Post>> GetPosts()
         {
-            var sql = "SELECT * FROM posts";
+            var sql = "SELECT title FROM posts";
 
-            return _db.LoadData<Post, dynamic>(sql, new { });
+            return await _db.LoadData<Post, dynamic>(sql, new { });
         }
-        
     }
 }
