@@ -1,0 +1,26 @@
+@page "/posts/{Id:int}"
+
+@using Domain
+@using Application
+
+@inject IPostData _db
+@if (_post is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h3>@_post.Title</h3>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    
+    private Post _post;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _post = await _db.GetPost(Id);
+    }
+}

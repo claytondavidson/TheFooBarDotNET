@@ -17,7 +17,7 @@ else
     @foreach (var post in _posts)
     {
         <div>
-            <p>@post.Title</p>
+            <a href="/posts/@post.Id">@post.Title</a>
         </div>
     }
 }

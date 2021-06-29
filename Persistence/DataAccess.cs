@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using Persistence.Interfaces;
 
 namespace Persistence
 {
@@ -20,7 +21,18 @@ namespace Persistence
             _config = config;
         }
 
-        public async Task<List<T>> LoadData<T, U>(string sql, U parameters)
+        public async Task<T> Get<T, U>(string sql, U parameters)
+        {
+            var connectionString = _config.GetConnectionString(ConnectionStringName);
+
+            using (IDbConnection connection = new NpgsqlConnection(connectionString))
+            {
+                var data = await connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
+                return data;
+            }
+        }
+
+        public async Task<List<T>> GetAll<T, U>(string sql, U parameters)
         {
             var connectionString = _config.GetConnectionString(ConnectionStringName);
 
@@ -31,7 +43,7 @@ namespace Persistence
             }
         }
 
-        public async Task SaveData<T>(string sql, T parameters)
+        public async Task Insert<T>(string sql, T parameters)
         {
             var connectionString = _config.GetConnectionString(ConnectionStringName);
             using IDbConnection connection = new SqlConnection(connectionString);

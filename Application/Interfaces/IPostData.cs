@@ -7,5 +7,6 @@ namespace Application
     public interface IPostData
     {
         Task<List<Post>> GetPosts();
+        Task<Post> GetPost(int id);
     }
 }
