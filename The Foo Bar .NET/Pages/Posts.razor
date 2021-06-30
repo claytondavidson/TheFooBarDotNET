@@ -2,9 +2,22 @@
 @attribute [Authorize]
 
 @using Domain
-@using Application
+@using Application.Interfaces
 
 @inject IPostData _db
+@inject AuthenticationStateProvider _authState
+
+<h3>Create a Post</h3>
+<EditForm Model="@_newPost" OnValidSubmit="@InsertPost">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+        
+    <InputText id="title" @bind-Value="_newPost.Title" />
+    <InputText id="body" @bind-Value="_newPost.Body" />
+    <InputCheckbox id="published" @bind-Value="_newPost.Published" />
+        
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
 
 <h3>Posts</h3>
 
@@ -22,12 +35,46 @@ else
     }
 }
 
-
 @code {
-    private List<Post> _posts;
-
+    private List<PostModel> _posts;
+    private PostDisplayModel _newPost = new();
+    private string _username;
+    private string _email;
+    
     protected override async Task OnInitializedAsync()
     {
         _posts = await _db.GetPosts();
+    }
+
+    private async Task InsertPost()
+    {
+        var userState = await _authState.GetAuthenticationStateAsync();
+
+        _username = userState.User.Claims
+            .Where(c => c.Type.Equals("name"))
+            .Select(c => c.Value)
+            .FirstOrDefault() ?? string.Empty;
+
+        _email = userState.User.Claims
+            .Where(c => c.Type.Equals("email_verified"))
+            .Select(c => c.Value)
+            .FirstOrDefault() ?? string.Empty;
+        
+        Console.WriteLine($"Email: {_email}");
+        
+        var p = new PostDisplayModel
+        {
+            Title = _newPost.Title,
+            Body = _newPost.Body,
+            Published = _newPost.Published,
+            Username = _username,
+            Email = _email
+        };
+        
+        await _db.CreatePost(p.Title, p.Body, p.Published, p.Username, p.Email);
+
+        _posts = await _db.GetPosts();
+
+        _newPost = new PostDisplayModel();
     }
 }

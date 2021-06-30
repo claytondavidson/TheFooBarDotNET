@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Application;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -48,8 +49,7 @@ namespace The_Foo_Bar_.NET
     options.ClientSecret = Configuration["Auth0:ClientSecret"];
     options.ResponseType = "code";
     options.Scope.Clear();
-    options.Scope.Add("openid");
-    options.Scope.Add("profile");
+    options.Scope.Add("openid profile email");
     options.CallbackPath = new PathString("/callback");
     options.ClaimsIssuer = "Auth0";
     options.Events = new OpenIdConnectEvents

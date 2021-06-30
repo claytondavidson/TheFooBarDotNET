@@ -2,25 +2,40 @@
 
 @using Domain
 @using Application
+@using Application.Interfaces
 
 @inject IPostData _db
+@inject NavigationManager _navigationManager
+
 @if (_post is null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <h3>@_post.Title</h3>
+    
+    <div>
+        <h3>@_post.Title</h3>
+        <p>@_post.Body</p>
+        <button class="btn btn-primary" @onclick="@DeletePost">Delete Post</button>
+    </div>
+                    
 }
 
 @code {
     [Parameter]
     public int Id { get; set; }
     
-    private Post _post;
+    private PostModel _post;
 
     protected override async Task OnInitializedAsync()
     {
         _post = await _db.GetPost(Id);
+    }
+
+    private async Task DeletePost()
+    {
+        await _db.DeletePost(Id);
+        _navigationManager.NavigateTo("/posts/");
     }
 }

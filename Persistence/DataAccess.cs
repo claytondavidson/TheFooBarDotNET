@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -46,8 +47,21 @@ namespace Persistence
         public async Task Insert<T>(string sql, T parameters)
         {
             var connectionString = _config.GetConnectionString(ConnectionStringName);
-            using IDbConnection connection = new SqlConnection(connectionString);
-            await connection.ExecuteAsync(sql, parameters);
+
+            using (IDbConnection connection = new NpgsqlConnection(connectionString))
+            {
+                await connection.ExecuteAsync(sql, parameters);
+            }
+        }
+
+        public async Task Delete<T>(string sql, T parameters)
+        {
+            var connectionString = _config.GetConnectionString(ConnectionStringName);
+
+            using (IDbConnection connection = new NpgsqlConnection(connectionString))
+            {
+                await connection.ExecuteAsync(sql, parameters);
+            }
         }
     }
 }
