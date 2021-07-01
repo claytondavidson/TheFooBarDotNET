@@ -30,11 +30,11 @@ namespace Application
             return await _db.Get<PostModel, dynamic>(sql, new { id });
         }
 
-        public Task CreatePost(string title, string body, bool published, string username, string email)
+        public Task CreatePost(string title, string body, bool published)
         {
-           var sql = "SELECT * FROM insert_post(@title, @body, @published, @username, @email)";
+           var sql = "SELECT * FROM insert_post(@title, @body, @published)";
 
-           return _db.Insert(sql, new { title, body, published, username, email });
+           return _db.Insert(sql, new { title, body, published });
         }
 
         public Task DeletePost(int id)

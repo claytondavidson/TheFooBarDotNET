@@ -1,11 +1,9 @@
 @page "/posts"
-@attribute [Authorize]
 
 @using Domain
 @using Application.Interfaces
 
 @inject IPostData _db
-@inject AuthenticationStateProvider _authState
 
 <h3>Create a Post</h3>
 <EditForm Model="@_newPost" OnValidSubmit="@InsertPost">
@@ -38,8 +36,6 @@ else
 @code {
     private List<PostModel> _posts;
     private PostDisplayModel _newPost = new();
-    private string _username;
-    private string _email;
     
     protected override async Task OnInitializedAsync()
     {
@@ -48,30 +44,14 @@ else
 
     private async Task InsertPost()
     {
-        var userState = await _authState.GetAuthenticationStateAsync();
-
-        _username = userState.User.Claims
-            .Where(c => c.Type.Equals("name"))
-            .Select(c => c.Value)
-            .FirstOrDefault() ?? string.Empty;
-
-        _email = userState.User.Claims
-            .Where(c => c.Type.Equals("email_verified"))
-            .Select(c => c.Value)
-            .FirstOrDefault() ?? string.Empty;
-        
-        Console.WriteLine($"Email: {_email}");
-        
         var p = new PostDisplayModel
         {
             Title = _newPost.Title,
             Body = _newPost.Body,
-            Published = _newPost.Published,
-            Username = _username,
-            Email = _email
+            Published = _newPost.Published
         };
         
-        await _db.CreatePost(p.Title, p.Body, p.Published, p.Username, p.Email);
+        await _db.CreatePost(p.Title, p.Body, p.Published);
 
         _posts = await _db.GetPosts();
 

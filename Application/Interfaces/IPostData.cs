@@ -8,7 +8,7 @@ namespace Application.Interfaces
     {
         Task<List<PostModel>> GetPosts();
         Task<PostModel> GetPost(int id);
-        Task CreatePost(string title, string body, bool published, string username, string email);
+        Task CreatePost(string title, string body, bool published);
         Task DeletePost(int id);
     }
 }
