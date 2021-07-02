@@ -25,43 +25,38 @@ namespace Persistence
         public async Task<T> Get<T, U>(string sql, U parameters)
         {
             var connectionString = _config.GetConnectionString(ConnectionStringName);
-
-            using (IDbConnection connection = new NpgsqlConnection(connectionString))
-            {
-                var data = await connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
-                return data;
-            }
+            using IDbConnection connection = new NpgsqlConnection(connectionString);
+            var data = await connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
+            return data;
         }
 
         public async Task<List<T>> GetAll<T, U>(string sql, U parameters)
         {
             var connectionString = _config.GetConnectionString(ConnectionStringName);
-
-            using (IDbConnection connection = new NpgsqlConnection(connectionString))
-            {
-                var data = await connection.QueryAsync<T>(sql, parameters);
-                return data.ToList();
-            }
+            using IDbConnection connection = new NpgsqlConnection(connectionString);
+            var data = await connection.QueryAsync<T>(sql, parameters);
+            return data.ToList();
         }
 
         public async Task Insert<T>(string sql, T parameters)
         {
             var connectionString = _config.GetConnectionString(ConnectionStringName);
-
-            using (IDbConnection connection = new NpgsqlConnection(connectionString))
-            {
-                await connection.ExecuteAsync(sql, parameters);
-            }
+            using IDbConnection connection = new NpgsqlConnection(connectionString);
+            await connection.ExecuteAsync(sql, parameters);
         }
 
         public async Task Delete<T>(string sql, T parameters)
         {
             var connectionString = _config.GetConnectionString(ConnectionStringName);
+            using IDbConnection connection = new NpgsqlConnection(connectionString);
+            await connection.ExecuteAsync(sql, parameters);
+        }
 
-            using (IDbConnection connection = new NpgsqlConnection(connectionString))
-            {
-                await connection.ExecuteAsync(sql, parameters);
-            }
+        public async Task Update<T>(string sql, T parameters)
+        {
+            var connectionString = _config.GetConnectionString(ConnectionStringName);
+            using IDbConnection connection = new NpgsqlConnection(connectionString);
+            await connection.ExecuteAsync(sql, parameters);
         }
     }
 }
