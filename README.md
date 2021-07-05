@@ -1,3 +1,3 @@
 # TheFooBarDotNET
 
-A prototype of The Foo Bar
+A prototype of The Foo Bar.
